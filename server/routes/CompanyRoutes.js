@@ -11,7 +11,11 @@ const {
     deleteCompany,
     createEmployeeCategory,
     deleteEmployeeCategory,
-    getAllEmployeeCategory
+    getAllEmployeeCategory,
+    createEmployee,
+    deleteEmployee,
+    getAllEmployee,
+    updateEmployee,
 } = require('../controllers/CompanyController');
 
 // Create a company
@@ -31,6 +35,11 @@ router.delete('/deleteCompany/:id', deleteCompany);
 router.post('/createEmployeeCategory', createEmployeeCategory);
 router.delete('/deleteEmployeeCategory/:id', deleteEmployeeCategory);
 router.get('/getAllEmployeeCategory/:id', getAllEmployeeCategory);
+
+router.post('/createEmployee', createEmployee);
+router.delete('/deleteEmployee/:id', deleteEmployee);
+router.get('/getAllEmployee/:id', getAllEmployee);
+router.put('/updateEmployee/:id', updateEmployee);
 
 
 module.exports = router;

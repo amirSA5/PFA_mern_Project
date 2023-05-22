@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const EmployeeCategory = require('../models/EmployeeCategory');
 const mongoose = require('mongoose');
+const Employee = require('../models/Employees');
 
 
 // Create a company
@@ -163,6 +164,50 @@ const getAllEmployeeCategory = async (req, res) => {
     }
 };
 
+const createEmployee = async (req, res) => {
+    try {
+        let { companyId, categoryId, firstName, lastName, email, password } = req.body;
+        companyId = new mongoose.Types.ObjectId(companyId);
+        categoryId = new mongoose.Types.ObjectId(categoryId);
+        const employee = new Employee({ companyId, categoryId, firstName, lastName, email, password });
+        const savedEmployee = await employee.save();
+        res.status(201).json(savedEmployee);
+    } catch (error) {
+        console.error('Error creating employee:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const deleteEmployee = async (req, res) => {
+    try {
+        await Employee.findByIdAndDelete(req.params.id)
+        res.json({ msg: "Deleted a Employee" })
+    } catch (err) {
+        return res.status(500).json({ msg: err.message })
+    }
+}
+
+const getAllEmployee = async (req, res) => {
+    try {
+        const employees = await Employee.find({ companyId: req.params.id });
+        res.json(employees);
+    } catch (error) {
+        console.error('Error fetching employees:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const updateEmployee = async (req, res) => {
+    try {
+        const { categoryId,firstName, lastName, email, password } = req.body;
+        await Employee.findOneAndUpdate({ _id: req.params.id }, { categoryId, firstName, lastName, email, password })
+
+        res.json({ msg: "Updated an employee" })
+    } catch (err) {
+        return res.status(500).json({ msg: err.message })
+    }
+}
+
 
 
 
@@ -177,4 +222,8 @@ module.exports = {
     createEmployeeCategory,
     deleteEmployeeCategory,
     getAllEmployeeCategory,
+    createEmployee,
+    deleteEmployee,
+    getAllEmployee,
+    updateEmployee,
 };
