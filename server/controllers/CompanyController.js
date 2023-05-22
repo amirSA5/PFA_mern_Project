@@ -2,6 +2,7 @@
 const Company = require('../models/Company');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const EmployeeCategory = require('../models/EmployeeCategory');
 
 
 
@@ -64,7 +65,7 @@ const login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
         })
 
-        res.json({ accesstoken,company })
+        res.json({ accesstoken, company })
 
     } catch (err) {
         return res.status(500).json({ msg: err.message })
@@ -109,10 +110,10 @@ const createRefreshToken = (company) => {
     return jwt.sign(company, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' })
 }
 
-const updateCompany= async (req, res) => {
+const updateCompany = async (req, res) => {
     try {
-        const { email,password } = req.body;
-        await Company.findOneAndUpdate({ _id: req.params.id } , { email,password })
+        const { email, password } = req.body;
+        await Company.findOneAndUpdate({ _id: req.params.id }, { email, password })
 
         res.json({ msg: "Updated a Company" })
     } catch (err) {
@@ -120,7 +121,7 @@ const updateCompany= async (req, res) => {
     }
 }
 
-const deleteCompany= async (req, res) => {
+const deleteCompany = async (req, res) => {
     try {
         await Company.findByIdAndDelete(req.params.id)
         res.json({ msg: "Deleted a Company" })
@@ -129,6 +130,40 @@ const deleteCompany= async (req, res) => {
     }
 }
 
+
+const createEmployeeCategory = async (req, res) => {
+    try {
+        const { category, description } = req.body;
+        const employeeCategory = new EmployeeCategory({ category, description });
+        const savedEmployeeCategory = await employeeCategory.save();
+        res.status(201).json(savedEmployeeCategory);
+    } catch (error) {
+        console.error('Error creating employeeCategory:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const deleteEmployeeCategory = async (req, res) => {
+    try {
+        await EmployeeCategory.findByIdAndDelete(req.params.id)
+        res.json({ msg: "Deleted a EmployeeCategory" })
+    } catch (err) {
+        return res.status(500).json({ msg: err.message })
+    }
+}
+
+const getAllEmployeeCategory = async (req, res) => {
+    try {
+        const employeesCategory = await EmployeeCategory.find();
+        res.json(employeesCategory);
+    } catch (error) {
+        console.error('Error fetching employeesCategory:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+
 module.exports = {
     createCompany,
     getAllCompanies,
@@ -136,5 +171,8 @@ module.exports = {
     getOneCompany,
     logout,
     updateCompany,
-    deleteCompany
+    deleteCompany,
+    createEmployeeCategory,
+    deleteEmployeeCategory,
+    getAllEmployeeCategory,
 };
