@@ -3,7 +3,7 @@ const Company = require('../models/Company');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const EmployeeCategory = require('../models/EmployeeCategory');
-
+const mongoose = require('mongoose');
 
 
 // Create a company
@@ -133,8 +133,9 @@ const deleteCompany = async (req, res) => {
 
 const createEmployeeCategory = async (req, res) => {
     try {
-        const { category, description } = req.body;
-        const employeeCategory = new EmployeeCategory({ category, description });
+        let { companyId, category, description } = req.body;
+        companyId = new mongoose.Types.ObjectId(companyId);
+        const employeeCategory = new EmployeeCategory({ companyId, category, description });
         const savedEmployeeCategory = await employeeCategory.save();
         res.status(201).json(savedEmployeeCategory);
     } catch (error) {
@@ -142,6 +143,7 @@ const createEmployeeCategory = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 const deleteEmployeeCategory = async (req, res) => {
     try {
         await EmployeeCategory.findByIdAndDelete(req.params.id)
@@ -153,7 +155,7 @@ const deleteEmployeeCategory = async (req, res) => {
 
 const getAllEmployeeCategory = async (req, res) => {
     try {
-        const employeesCategory = await EmployeeCategory.find();
+        const employeesCategory = await EmployeeCategory.find({companyId :req.params.id});
         res.json(employeesCategory);
     } catch (error) {
         console.error('Error fetching employeesCategory:', error);

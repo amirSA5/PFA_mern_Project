@@ -2,6 +2,10 @@
 const mongoose = require('mongoose');
 
 const employeeCategorySchema = new mongoose.Schema({
+    companyId: {
+        type: mongoose.Types.ObjectId,
+        required: true,
+    },
     category: {
         type: String,
         required: true,
@@ -9,7 +13,6 @@ const employeeCategorySchema = new mongoose.Schema({
     description: {
         type: String,
         required: true,
-        unique: true,
     },
 });
 

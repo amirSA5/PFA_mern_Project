@@ -30,7 +30,7 @@ router.delete('/deleteCompany/:id', deleteCompany);
 
 router.post('/createEmployeeCategory', createEmployeeCategory);
 router.delete('/deleteEmployeeCategory/:id', deleteEmployeeCategory);
-router.get('/getAllEmployeeCategory', getAllEmployeeCategory);
+router.get('/getAllEmployeeCategory/:id', getAllEmployeeCategory);
 
 
 module.exports = router;
